@@ -25,7 +25,7 @@ class SomethingTest extends \PHPUnit_Framework_TestCase
 	{
 		$videoLibrary = new VideoLibrary($this->xbmcConnector);
 
-		//var_dump($videoLibrary->getMovies());
+		// $videoLibrary->getMovies();
 		//var_dump($videoLibrary->getRecentlyAddedEpisodes());
 		//var_dump($videoLibrary->scan());
 		//var_dump($videoLibrary->export());
@@ -37,6 +37,14 @@ class SomethingTest extends \PHPUnit_Framework_TestCase
 	public function testSystem()
 	{
 		$system = new System($this->xbmcConnector);
-		//$system->suspend();
+		// $system->suspend();
+		/*
+		var_dump(
+			$system->isHibernateable(),
+			$system->isRebootable(),
+			$system->isShutdownable(),
+			$system->isSuspendable()
+		);
+		*/
 	}
 }
