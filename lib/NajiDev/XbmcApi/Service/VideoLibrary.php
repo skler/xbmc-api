@@ -8,8 +8,6 @@ use \NajiDev\XbmcApi\DataType\Video\Details\Movie;
 
 class VideoLibrary extends AbstractService
 {
-	const NS = 'VideoLibrary';
-
 	protected static $movieProperties = array(
 		'fanart', 'thumbnail', 'playcount', 'title', 'plot', 'lastplayed', 'file', 'director', 'streamdetails',
 		'runtime', 'resume',
@@ -172,10 +170,5 @@ class VideoLibrary extends AbstractService
 			$episodes[] = Episode::createInstance($episode);
 
 		return $episodes;
-	}
-
-	public function getNamespace()
-	{
-		return 'VideoLibrary';
 	}
 }

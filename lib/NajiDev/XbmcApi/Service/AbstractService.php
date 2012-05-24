@@ -5,9 +5,7 @@ namespace NajiDev\XbmcApi\Service;
 
 abstract class AbstractService
 {
-	const NS = null;
-
-	protected $xbmcConnector;
+	private $xbmcConnector;
 
 	public function __construct(XbmcConnector $xbmcConnector)
 	{
@@ -19,5 +17,8 @@ abstract class AbstractService
 		return $this->xbmcConnector->call($this->getNamespace() . '.' . $method, $parameters);
 	}
 
-	abstract public function getNamespace();
+	private function getNamespace()
+	{
+		return str_replace(__NAMESPACE__ . '\\', '', get_class($this));
+	}
 }
