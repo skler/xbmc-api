@@ -8,13 +8,6 @@ The interface allows to fetch only certain attributes, when - for example - a mo
 
 Installation is prefered by composer. This is what you need in your composer.json:
 
-    "repositories" : [
-        {
-            "type" : "vcs",
-            "url"  : "http://github.com/rejinka/xbmc-rpc"
-        }
-
-    ],
     "require" : {
         "najidev/xbmc-rpc" : "*"
     }
