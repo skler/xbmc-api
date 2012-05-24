@@ -1,5 +1,5 @@
 {
-	"name":         "najidev/xbmc-rpc",
+	"name":         "najidev/xbmc-api",
 	"description":  "Interacting with xbmc rpc api",
 	"keywords": [
 		"xbmc"
