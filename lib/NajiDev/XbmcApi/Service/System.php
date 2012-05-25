@@ -69,13 +69,4 @@ class System extends AbstractService
 	{
 		return $this->getProperty('canshutdown');
 	}
-
-	protected function getProperty($key)
-	{
-		$response = $this->callXbmc('GetProperties', array(
-			'properties' => array($key)
-		));
-
-		return $response->$key;
-	}
 }

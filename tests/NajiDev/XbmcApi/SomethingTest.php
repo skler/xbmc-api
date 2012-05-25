@@ -2,9 +2,10 @@
 
 namespace NajiDev\XbmcApi;
 
-use \NajiDev\XbmcApi\Service\System,
+use \NajiDev\XbmcApi\Service\Application,
+    \NajiDev\XbmcApi\Service\System,
     \NajiDev\XbmcApi\Service\VideoLibrary,
-	\NajiDev\XbmcApi\Service\XbmcConnector;
+    \NajiDev\XbmcApi\Service\XbmcConnector;
 
 
 class SomethingTest extends \PHPUnit_Framework_TestCase
@@ -46,5 +47,21 @@ class SomethingTest extends \PHPUnit_Framework_TestCase
 			$system->isSuspendable()
 		);
 		*/
+	}
+
+	public function testApplication()
+	{
+		$application = new Application($this->xbmcConnector);
+
+		/*
+		$application->unmute();
+		var_dump($application->isMuted());
+		$application->setVolume(100);
+		var_dump($application->isMuted());
+		$application->unmute();
+
+		var_dump($application->getName());
+		*/
+
 	}
 }

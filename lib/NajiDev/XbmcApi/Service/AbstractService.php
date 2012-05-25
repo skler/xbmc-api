@@ -21,4 +21,13 @@ abstract class AbstractService
 	{
 		return str_replace(__NAMESPACE__ . '\\', '', get_class($this));
 	}
+
+	protected function getProperty($key)
+	{
+		$response = $this->callXbmc('GetProperties', array(
+				'properties' => array($key)
+			));
+
+		return $response->$key;
+	}
 }
