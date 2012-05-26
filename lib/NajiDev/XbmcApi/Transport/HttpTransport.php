@@ -46,14 +46,18 @@ class HttpTransport implements Transport
 		$response = json_decode($response);
 		if (isset($response->error))
 		{
-			$data = $response->error->data;
+			$stackException = null;
+			if (isset($response->error->data))
+			{
+				$stackException = new InvalidArgumentException(
+					'In ' . $response->error->data->method . ': ' . $response->error->data->stack->message
+				);
+			}
 
 			throw new InvalidArgumentException(
 				$response->error->message,
 				$response->error->code,
-				new InvalidArgumentException(
-					'In ' . $data->method . ': ' . $data->stack->message
-				)
+				$stackException
 			);
 		}
 

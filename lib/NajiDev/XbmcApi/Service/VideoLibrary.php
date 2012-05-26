@@ -15,18 +15,43 @@ use \NajiDev\XbmcApi\Exception\NotImplementedException;
 class VideoLibrary extends AbstractService
 {
 	protected static $movieProperties = array(
-		'fanart', 'thumbnail', 'playcount', 'title', 'plot', 'lastplayed', 'file', 'director', 'streamdetails',
-		'runtime', 'resume',
-		'rating', 'set', 'year', 'setid', 'votes', 'tagline', 'writer',
-		'plotoutline', 'sorttitle', 'imdbnumber', 'studio', 'showlink',
-		'genre', 'productioncode', 'country', 'premiered',
-		'originaltitle', 'cast', 'mpaa', 'top250', 'trailer'
+		'director', 'streamdetails', 'runtime', 'resume', 'rating', 'set', 'year', 'setid', 'votes', 'tagline',
+		'writer', 'plotoutline', 'sorttitle', 'imdbnumber', 'studio', 'showlink', 'genre', 'productioncode', 'country',
+		'premiered', 'originaltitle', 'cast', 'mpaa', 'top250', 'trailer',
+
+		'plot', 'lastplayed', 'file',
+
+		'title',
+
+		'playcount',
+
+		'fanart', 'thumbnail',
 	);
 
 	protected static $episodeProperties = array(
-		'fanart', 'thumbnail', 'playcount', 'title', 'plot', 'lastplayed', 'file', 'director',
-		'streamdetails', 'runtime', 'resume', 'rating', 'tvshowid', 'votes', 'episode', 'productioncode', 'season',
-		'writer', 'originaltitle', 'cast', 'firstaired', 'showtitle'
+		'director', 'streamdetails', 'runtime', 'resume', 'rating', 'tvshowid', 'votes', 'episode', 'productioncode',
+		'season', 'writer', 'originaltitle', 'cast', 'firstaired', 'showtitle',
+
+		'plot', 'lastplayed', 'file',
+
+		'title',
+
+		'playcount',
+
+		'fanart', 'thumbnail',
+	);
+
+	protected static $tvshowProperties = array(
+		'episodeguide', 'episode', 'imdbnumber', 'rating', 'mpaa', 'year', 'votes', 'premiered', 'originaltitle',
+		'cast', 'studio', 'sorttitle', 'genre',
+
+		'plot', 'lastplayed', 'file',
+
+		'title',
+
+		'playcount',
+
+		'fanart', 'thumbnail'
 	);
 
 	/**
@@ -222,23 +247,48 @@ class VideoLibrary extends AbstractService
 	/**
 	 * Retrieve details about a specific tv show
 	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
-	 * @return TVShow
+	 * @param $tvshowId
+	 * @throws \InvalidArgumentException
+	 * @return TVShow|null
 	 */
-	public function getTVShowDetails()
+	public function getTVShow($tvshowId)
 	{
-		throw new NotImplementedException;
+		if (!is_int($tvshowId))
+			throw new \InvalidArgumentException('The $tvshowid has to be an integer');
+
+		try
+		{
+			$response = $this->callXbmc('GetTVShowDetails', array(
+				'tvshowid'   => $tvshowId,
+				'properties' => self::$tvshowProperties
+			));
+
+			return $this->buildTvShow($response->tvshowdetails);
+		}
+		catch (\InvalidArgumentException $e)
+		{
+			return null;
+		}
 	}
 
 	/**
 	 * Retrieve all tv shows
 	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
 	 * @return TVShow[]
 	 */
 	public function getTVShows()
 	{
-		throw new NotImplementedException;
+		$service = $this;
+
+		$response = $this->callXbmc('GetTVShows', array(
+			'properties' => self::$tvshowProperties
+		));
+
+		$shows = array();
+		foreach ($response->tvshows as $show)
+			$shows[] = $this->buildTvShow($show);
+
+		return $shows;
 	}
 
 	/**
@@ -249,5 +299,18 @@ class VideoLibrary extends AbstractService
 	public function scan()
 	{
 		throw new NotImplementedException;
+	}
+
+	protected function buildTvShow(\stdClass $show)
+	{
+		$service = $this;
+
+		$showObj = new TVShow($show);
+		$showObj->setEpisodes(function() use ($showObj, $service)
+		{
+			return $service->getEpisodes($showObj->getId());
+		});
+
+		return $showObj;
 	}
 }
