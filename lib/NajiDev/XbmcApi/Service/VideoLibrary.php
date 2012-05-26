@@ -4,6 +4,12 @@ namespace NajiDev\XbmcApi\Service;
 
 use \NajiDev\XbmcApi\DataType\Video\Details\Episode;
 use \NajiDev\XbmcApi\DataType\Video\Details\Movie;
+use \NajiDev\XbmcApi\DataType\Video\Details\MovieSet;
+use \NajiDev\XbmcApi\DataType\Video\Details\MusicVideo;
+use \NajiDev\XbmcApi\DataType\Video\Details\Season;
+use \NajiDev\XbmcApi\DataType\Video\Details\TVShow;
+
+use \NajiDev\XbmcApi\Exception\NotImplementedException;
 
 
 class VideoLibrary extends AbstractService
@@ -28,19 +34,18 @@ class VideoLibrary extends AbstractService
 	 *
 	 * @return boolean whether scanning was started
 	 */
-	public function scan()
+	public function clean()
 	{
 		return 'OK' === $this->callXbmc('Clean');
 	}
 
 	/**
 	 * Exports all items from the video library
-	 * @throws \Exception
+	 * @throws NotImplementedException
 	 */
 	public function export()
 	{
-		throw new \Exception('Not yet implemented');
-		//return $this->callXbmc('Export');
+		throw new NotImplementedException;
 	}
 
 	/**
@@ -88,7 +93,7 @@ class VideoLibrary extends AbstractService
 
 	public function getGenres()
 	{
-		throw new \Exception;
+		throw new NotImplementedException;
 	}
 
 	/**
@@ -105,14 +110,23 @@ class VideoLibrary extends AbstractService
 		return Movie::createInstance($response->moviedetails);
 	}
 
-	public function getMovieSetDetails()
+	/**
+	 * @param $setid
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return MovieSet
+	 */
+	public function getMovieSet($setid)
 	{
-		throw new \Exception;
+		throw new NotImplementedException;
 	}
 
+	/**
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return MovieSet[]
+	 */
 	public function getMovieSets()
 	{
-		throw new \Exception;
+		throw new NotImplementedException;
 	}
 
 
@@ -137,21 +151,21 @@ class VideoLibrary extends AbstractService
 	/**
 	 * Retrieve details about a specific music video
 	 *
-	 * @throws \Exception
+	 * @throws NotImplementedException
 	 */
 	public function getMusicVideoDetails()
 	{
-		throw new \Exception;
+		throw new NotImplementedException;
 	}
 
 	/**
 	 * Retrieve all music videos
 	 *
-	 * @throws \Exception
+	 * @throws NotImplementedException
 	 */
 	public function getMusicVideos()
 	{
-		throw new \Exception;
+		throw new NotImplementedException;
 	}
 
 	/**
@@ -170,5 +184,70 @@ class VideoLibrary extends AbstractService
 			$episodes[] = Episode::createInstance($episode);
 
 		return $episodes;
+	}
+
+	/**
+	 * Retrieve all recently added movies
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return Movie[]
+	 */
+	public function getRecentlyAddedMovies()
+	{
+		throw new NotImplementedException;
+	}
+
+	/**
+	 * Retrieve all recently added music videos
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return MusicVideo[]
+	 */
+	public function getRecentlyAddedMusicVideos()
+	{
+		throw new NotImplementedException;
+	}
+
+	/**
+	 * Retrieve all tv seasons
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return Season[]
+	 */
+	public function getSeasons()
+	{
+		throw new NotImplementedException;
+	}
+
+	/**
+	 * Retrieve details about a specific tv show
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return TVShow
+	 */
+	public function getTVShowDetails()
+	{
+		throw new NotImplementedException;
+	}
+
+	/**
+	 * Retrieve all tv shows
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return TVShow[]
+	 */
+	public function getTVShows()
+	{
+		throw new NotImplementedException;
+	}
+
+	/**
+	 * Scans the video sources for new library items
+	 *
+	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 */
+	public function scan()
+	{
+		throw new NotImplementedException;
 	}
 }
