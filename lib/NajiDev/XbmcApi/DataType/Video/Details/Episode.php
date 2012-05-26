@@ -67,6 +67,32 @@ class Episode extends File
 	 */
 	protected $showtitle;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setRaiting($object->rating);
+			$this->setTvshowid($object->tvshowid);
+			$this->setVotes($object->votes);
+			$this->setEpisode($object->episode);
+			$this->setProductioncode($object->productioncode);
+			$this->setSeason($object->season);
+			$this->setWriter($object->writer);
+			$this->setEpisodeId($object->episodeid);
+			$this->setOriginaltitle($object->originaltitle);
+			$this->setCast($object->cast);
+			$this->setFirstaired($object->firstaired);
+			$this->setShowtitle($object->showtitle);
+
+			$casts = array();
+			foreach ($object->cast as $cast)
+				$casts[] = new Cast($cast);
+			$this->setCast($casts);
+		}
+	}
+
 	public function setCast($cast)
 	{
 		$this->cast = $cast;
@@ -254,39 +280,5 @@ class Episode extends File
 	public function getWriter()
 	{
 		return $this->writer;
-	}
-
-	public static function createInstance(\stdClass $object)
-	{
-		/** @var $instance Episode */
-		$instance = self::cast(parent::createInstance($object), new self);
-
-		$instance->setRaiting($object->rating);
-		$instance->setTvshowid($object->tvshowid);
-		$instance->setVotes($object->votes);
-		$instance->setEpisode($object->episode);
-		$instance->setProductioncode($object->productioncode);
-		$instance->setSeason($object->season);
-		$instance->setWriter($object->writer);
-		$instance->setEpisodeId($object->episodeid);
-		$instance->setOriginaltitle($object->originaltitle);
-		$instance->setCast($object->cast);
-		$instance->setFirstaired($object->firstaired);
-		$instance->setShowtitle($object->showtitle);
-
-		$casts = array();
-		foreach ($object->cast as $cast)
-			$casts[] = Cast::createInstance($cast);
-		$instance->setCast($casts);
-
-		return $instance;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'rating', 'tvshowid', 'votes', 'episode', 'productioncode', 'season', 'writer', 'episodeid',
-			'originaltitle', 'cast', 'firstaired', 'showtitle'
-		));
 	}
 }

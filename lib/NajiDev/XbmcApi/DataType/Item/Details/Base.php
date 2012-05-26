@@ -2,15 +2,21 @@
 
 namespace NajiDev\XbmcApi\DataType\Item\Details;
 
-use NajiDev\XbmcApi\DataType\DataType;
 
-
-class Base extends DataType
+class Base
 {
 	/**
 	 * @var string
 	 */
 	protected $label;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setLabel($object->label);
+		}
+	}
 
 	/**
 	 * @param string $label
@@ -26,21 +32,5 @@ class Base extends DataType
 	public function getLabel()
 	{
 		return $this->label;
-	}
-
-	public static function getFieldNames()
-	{
-		return array(
-			'label'
-		);
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self;
-
-		$instance->setLabel($object->label);
-
-		return $instance;
 	}
 }

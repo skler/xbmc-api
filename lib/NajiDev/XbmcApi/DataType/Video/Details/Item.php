@@ -20,6 +20,18 @@ class Item extends Media
 	 */
 	protected $file;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setFile($object->file);
+			$this->setLastplayed($object->lastplayed);
+			$this->setPlot($object->plot);
+		}
+	}
+
 	/**
 	 * @param string $file
 	 */
@@ -66,22 +78,5 @@ class Item extends Media
 	public function getPlot()
 	{
 		return $this->plot;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = self::cast(parent::createInstance($object), new self);
-		$instance->setFile($object->file);
-		$instance->setLastplayed($object->lastplayed);
-		$instance->setPlot($object->plot);
-
-		return $instance;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'plot', 'lastplayed', 'file'
-		));
 	}
 }

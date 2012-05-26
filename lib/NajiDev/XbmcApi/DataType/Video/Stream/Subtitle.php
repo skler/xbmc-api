@@ -2,15 +2,21 @@
 
 namespace NajiDev\XbmcApi\DataType\Video\Stream;
 
-use \NajiDev\XbmcApi\DataType\DataType;
 
-
-class Subtitle extends DataType
+class Subtitle
 {
 	/**
 	 * @var string
 	 */
 	protected $language;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setLanguage($object->language);
+		}
+	}
 
 	/**
 	 * @param string $language
@@ -26,20 +32,5 @@ class Subtitle extends DataType
 	public function getLanguage()
 	{
 		return $this->language;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-		$instance->setLanguage($object->language);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array(
-			'language'
-		);
 	}
 }

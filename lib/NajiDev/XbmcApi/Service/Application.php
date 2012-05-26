@@ -78,7 +78,7 @@ class Application extends AbstractService
 	 */
 	public function getVersion()
 	{
-		return Version::createInstance($this->getProperty('version'));
+		return new Version($this->getProperty('Version'));
 	}
 
 	/**

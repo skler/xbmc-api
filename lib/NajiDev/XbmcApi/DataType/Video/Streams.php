@@ -24,6 +24,39 @@ class Streams
 	 */
 	protected $subtitle = array();
 
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			// audio
+			if (isset($object->audio))
+			{
+				$streams = array();
+				foreach ($object->audio as $stream)
+					$streams[] = new Audio($stream);
+				$this->setAudio($streams);
+			}
+
+			// video
+			if (isset($object->video))
+			{
+				$streams = array();
+				foreach ($object->video as $stream)
+					$streams[] = new Video($stream);
+				$this->setVideo($streams);
+			}
+
+			// subtitle
+			if (isset($object->subtitle))
+			{
+				$streams = array();
+				foreach ($object->subtitle as $stream)
+					$streams[] = new Subtitle($stream);
+				$this->setSubtitle($streams);
+			}
+		}
+	}
+
 	public function setAudio($audio)
 	{
 		$this->audio = $audio;
@@ -52,39 +85,5 @@ class Streams
 	public function getVideo()
 	{
 		return $this->video;
-	}
-
-	public static function createInstance($object)
-	{
-		$instance = new self();
-
-		// audio
-		if (isset($object->audio))
-		{
-			$streams = array();
-			foreach($object->audio as $audio)
-				$streams[] = Audio::createInstance($audio);
-			$instance->setAudio($streams);
-		}
-
-		// video
-		if (isset($object->video))
-		{
-			$streams = array();
-			foreach($object->video as $video)
-				$streams[] = Video::createInstance($video);
-			$instance->setVideo($streams);
-		}
-
-		if (isset($object->subtitle))
-		{
-			// subtitle
-			$streams = array();
-			foreach($object->subtitle as $subtitle)
-				$streams[] = Subtitle::createInstance($subtitle);
-			$instance->setSubtitle($streams);
-		}
-
-		return $instance;
 	}
 }

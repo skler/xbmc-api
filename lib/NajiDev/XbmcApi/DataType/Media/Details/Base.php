@@ -15,6 +15,16 @@ class Base extends \NajiDev\XbmcApi\DataType\Item\Details\Base
 	 */
 	protected $thumbnail;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setFanart($this->fanart);
+			$this->setThumbnail($this->thumbnail);
+		}
+	}
 
 	/**
 	 * @param string $fanart
@@ -46,22 +56,5 @@ class Base extends \NajiDev\XbmcApi\DataType\Item\Details\Base
 	public function getThumbnail()
 	{
 		return $this->thumbnail;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'fanart', 'thumbnail'
-		));
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = self::cast(parent::createInstance($object), new self);
-
-		$instance->setFanart($object->fanart);
-		$instance->setThumbnail($object->thumbnail);
-
-		return $instance;
 	}
 }

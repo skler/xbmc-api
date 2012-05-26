@@ -2,10 +2,8 @@
 
 namespace NajiDev\XbmcApi\DataType\Application;
 
-use \NajiDev\XbmcApi\DataType\DataType;
 
-
-class Version extends DataType
+class Version
 {
 	/**
 	 * @var int
@@ -26,6 +24,19 @@ class Version extends DataType
 	 * @var mixed
 	 */
 	protected $revision;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setMajor($object->major);
+			$this->setMinor($object->minor);
+			$this->setTag($object->tag);
+
+			if (isset($object->revision) && 'Unknown' !== $object->revision)
+				$this->setRevision($object->revision);
+		}
+	}
 
 	/**
 	 * @param int $major
@@ -89,25 +100,5 @@ class Version extends DataType
 	public function getTag()
 	{
 		return $this->tag;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-		$instance->setMajor($object->major);
-		$instance->setMinor($object->minor);
-		$instance->setTag($object->tag);
-
-		if (isset($object->revision) && 'Unknown' !== $object->revision)
-			$instance->setRevision($object->revision);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array(
-			'major', 'tag', 'minor', 'revision'
-		);
 	}
 }

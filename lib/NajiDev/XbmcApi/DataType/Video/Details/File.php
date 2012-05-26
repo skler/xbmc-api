@@ -92,22 +92,16 @@ class File extends Item
 		return $this->streamdetails;
 	}
 
-	static function createInstance(\stdClass $object)
+	public function __construct($object = null)
 	{
-		$instance = self::cast(parent::createInstance($object), new self);
+		parent::__construct($object);
 
-		$instance->setDirector($object->director);
-		$instance->setResume(Resume::createInstance($object->resume));
-		$instance->setRuntime($object->runtime);
-		$instance->setStreamdetails(Streams::createInstance($object->streamdetails));
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'director', 'streamdetails', 'runtime', 'resume'
-		));
+		if ($object instanceof \stdClass)
+		{
+			$this->setDirector($object->director);
+			$this->setResume(new Resume($object->resume));
+			$this->setRuntime($object->runtime);
+			$this->setStreamdetails(new Streams($object->streamdetails));
+		}
 	}
 }

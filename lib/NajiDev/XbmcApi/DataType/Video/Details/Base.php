@@ -10,6 +10,16 @@ class Base extends \NajiDev\XbmcApi\DataType\Media\Details\Base
 	 */
 	protected $playcount;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setPlaycount($object->playcount);
+		}
+	}
+
 	/**
 	 * @param int $playcount
 	 */
@@ -24,20 +34,5 @@ class Base extends \NajiDev\XbmcApi\DataType\Media\Details\Base
 	public function getPlaycount()
 	{
 		return $this->playcount;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'playcount'
-		));
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = self::cast(parent::createInstance($object), new self);
-		$instance->setPlaycount($object->playcount);
-
-		return $instance;
 	}
 }

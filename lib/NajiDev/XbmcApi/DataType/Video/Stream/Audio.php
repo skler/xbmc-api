@@ -2,10 +2,8 @@
 
 namespace NajiDev\XbmcApi\DataType\Video\Stream;
 
-use NajiDev\XbmcApi\DataType\DataType;
 
-
-class Audio extends DataType
+class Audio
 {
 	/**
 	 * @var int
@@ -21,6 +19,16 @@ class Audio extends DataType
 	 * @var string
 	 */
 	protected $language;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setChannels($object->channels);
+			$this->setCodec($object->codec);
+			$this->setLanguage($object->language);
+		}
+	}
 
 	/**
 	 * @param int $channels
@@ -68,23 +76,5 @@ class Audio extends DataType
 	public function getLanguage()
 	{
 		return $this->language;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-
-		$instance->setChannels($object->channels);
-		$instance->setCodec($object->codec);
-		$instance->setLanguage($object->language);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array(
-			'channels', 'codec', 'language'
-		);
 	}
 }

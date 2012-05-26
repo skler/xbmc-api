@@ -10,6 +10,16 @@ class Media extends Base
 	 */
 	protected $title;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setTitle($object->title);
+		}
+	}
+
 	/**
 	 * @param string $title
 	 */
@@ -24,20 +34,5 @@ class Media extends Base
 	public function getTitle()
 	{
 		return $this->title;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'title'
-		));
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = self::cast(parent::createInstance($object), new self);
-		$instance->setTitle($object->title);
-
-		return $instance;
 	}
 }

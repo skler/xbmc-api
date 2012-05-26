@@ -17,6 +17,15 @@ class Resume extends DataType
 	 */
 	protected $total;
 
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setPosition($object->position);
+			$this->setTotal($object->total);
+		}
+	}
+
 	/**
 	 * @param int $position
 	 */
@@ -47,21 +56,5 @@ class Resume extends DataType
 	public function getTotal()
 	{
 		return $this->total;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-		$instance->setPosition($object->position);
-		$instance->setTotal($object->total);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array(
-			'position', 'total'
-		);
 	}
 }

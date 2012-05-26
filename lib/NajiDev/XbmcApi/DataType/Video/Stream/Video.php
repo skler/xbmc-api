@@ -2,10 +2,8 @@
 
 namespace NajiDev\XbmcApi\DataType\Video\Stream;
 
-use NajiDev\XbmcApi\DataType\DataType;
 
-
-class Video extends DataType
+class Video
 {
 	/**
 	 * @var float
@@ -31,6 +29,18 @@ class Video extends DataType
 	 * @var int
 	 */
 	protected $width;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			$this->setAspect($object->aspect);
+			$this->setCodec($object->codec);
+			$this->setDuration($object->duration);
+			$this->setHeight($object->height);
+			$this->setWidth($object->width);
+		}
+	}
 
 	/**
 	 * @param float $aspect
@@ -110,24 +120,5 @@ class Video extends DataType
 	public function getWidth()
 	{
 		return $this->width;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-		$instance->setAspect($object->aspect);
-		$instance->setCodec($object->codec);
-		$instance->setDuration($object->duration);
-		$instance->setHeight($object->height);
-		$instance->setWidth($object->width);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		return array(
-			'aspect', 'codec', 'duration', 'height', 'width'
-		);
 	}
 }

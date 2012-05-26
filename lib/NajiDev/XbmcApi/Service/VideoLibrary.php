@@ -61,7 +61,7 @@ class VideoLibrary extends AbstractService
 			'properties' => self::$episodeProperties
 		));
 
-		return Episode::createInstance($response->episodedetails);
+		return new Episode($response->episodedetails);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-			$episodes[] = Episode::createInstance($episode);
+			$episodes[] = new Episode($episode);
 
 		return $episodes;
 	}
@@ -107,7 +107,7 @@ class VideoLibrary extends AbstractService
 			'properties' => self::$movieProperties
 		));
 
-		return Movie::createInstance($response->moviedetails);
+		return new Movie($response->moviedetails);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class VideoLibrary extends AbstractService
 
 		$movies = array();
 		foreach ($response->movies as $movie)
-			$movies[] = Movie::createInstance($movie);
+			$movies[] = new Movie($movie);
 
 		return $movies;
 	}
@@ -181,7 +181,7 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-			$episodes[] = Episode::createInstance($episode);
+			$episodes[] = new Episode($episode);
 
 		return $episodes;
 	}

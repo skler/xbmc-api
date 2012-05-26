@@ -2,10 +2,8 @@
 
 namespace NajiDev\XbmcApi\DataType\Video;
 
-use \NajiDev\XbmcApi\DataType\DataType;
 
-
-class Cast extends DataType
+class Cast
 {
 	/**
 	 * @var string
@@ -21,6 +19,21 @@ class Cast extends DataType
 	 * @var string
 	 */
 	protected $thumbnail;
+
+	public function __construct($object = null)
+	{
+		if ($object instanceof \stdClass)
+		{
+			if (isset($object->name))
+				$this->setName($object->name);
+
+			if (isset($object->role))
+				$this->setRole($object->role);
+
+			if (isset($object->thumbnail))
+				$this->setThumbnail($object->thumbnail);
+		}
+	}
 
 	/**
 	 * @param string $name
@@ -68,25 +81,5 @@ class Cast extends DataType
 	public function getThumbnail()
 	{
 		return $this->thumbnail;
-	}
-
-	static function createInstance(\stdClass $object)
-	{
-		$instance = new self();
-		if (isset($object->name))
-			$instance->setName($object->name);
-
-		if (isset($object->role))
-			$instance->setRole($object->role);
-
-		if (isset($object->thumbnail))
-			$instance->setThumbnail($object->thumbnail);
-
-		return $instance;
-	}
-
-	static function getFieldNames()
-	{
-		// TODO: Implement getFieldNames() method.
 	}
 }

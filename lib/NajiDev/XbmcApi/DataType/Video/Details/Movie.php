@@ -119,6 +119,42 @@ class Movie extends File
 	 */
 	protected $trailer;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setRating($object->rating);
+			$this->setSet($object->set);
+			$this->setYear($object->year);
+			$this->setSetid($object->setid);
+			$this->setVotes($object->votes);
+			$this->setTagline($object->tagline);
+			$this->setWriter($object->writer);
+			$this->setPlotoutline($object->plotoutline);
+			$this->setSorttitle($object->sorttitle);
+			$this->setImdbnummer($object->imdbnumber);
+			$this->setStudio($object->studio);
+			$this->setShowlink($object->showlink);
+			$this->setGenre($object->genre);
+			$this->setMovieid($object->movieid);
+			$this->setProductioncode($object->productioncode);
+			$this->setCountry($object->country);
+			$this->setPremiered($object->premiered);
+			$this->setOriginaltitle($object->originaltitle);
+			$this->setCast($object->cast);
+			$this->setMpaa($object->mpaa);
+			$this->setTop250($object->top250);
+			$this->setTrailer($object->trailer);
+
+			$casts = array();
+			foreach ($object->cast as $cast)
+				$casts[] = new Cast($cast);
+			$this->setCast($casts);
+		}
+	}
+
 	public function setCast($cast)
 	{
 		$this->cast = $cast;
@@ -454,50 +490,5 @@ class Movie extends File
 	public function getYear()
 	{
 		return $this->year;
-	}
-
-	public static function createInstance(\stdClass $object)
-	{
-		$instance = self::cast(parent::createInstance($object), new self);
-
-		$instance->setRating($object->rating);
-		$instance->setSet($object->set);
-		$instance->setYear($object->year);
-		$instance->setSetid($object->setid);
-		$instance->setVotes($object->votes);
-		$instance->setTagline($object->tagline);
-		$instance->setWriter($object->writer);
-		$instance->setPlotoutline($object->plotoutline);
-		$instance->setSorttitle($object->sorttitle);
-		$instance->setImdbnummer($object->imdbnumber);
-		$instance->setStudio($object->studio);
-		$instance->setShowlink($object->showlink);
-		$instance->setGenre($object->genre);
-		$instance->setMovieid($object->movieid);
-		$instance->setProductioncode($object->productioncode);
-		$instance->setCountry($object->country);
-		$instance->setPremiered($object->premiered);
-		$instance->setOriginaltitle($object->originaltitle);
-		$instance->setCast($object->cast);
-		$instance->setMpaa($object->mpaa);
-		$instance->setTop250($object->top250);
-		$instance->setTrailer($object->trailer);
-
-		$casts = array();
-		foreach ($object->cast as $cast)
-			$casts[] = Cast::createInstance($cast);
-		$instance->setCast($casts);
-
-		return $instance;
-	}
-
-	public static function getFieldNames()
-	{
-		return array_merge(parent::getFieldNames(), array(
-			'rating', 'set', 'year', 'setid', 'votes', 'tagline', 'writer',
-			'plotoutline', 'sorttitle', 'imdbnumber', 'studio', 'showlink',
-			'genre', 'productioncode', 'country', 'premiered',
-			'originaltitle', 'cast', 'mpaa', 'top250', 'trailer'
-		));
 	}
 }
