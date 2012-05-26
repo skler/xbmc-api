@@ -2,12 +2,12 @@
 
 namespace NajiDev\XbmcApi\Service;
 
-use \NajiDev\XbmcApi\DataType\Video\Details\Episode;
-use \NajiDev\XbmcApi\DataType\Video\Details\Movie;
-use \NajiDev\XbmcApi\DataType\Video\Details\MovieSet;
-use \NajiDev\XbmcApi\DataType\Video\Details\MusicVideo;
-use \NajiDev\XbmcApi\DataType\Video\Details\Season;
-use \NajiDev\XbmcApi\DataType\Video\Details\TVShow;
+use \NajiDev\XbmcApi\Model\Video\Episode,
+    \NajiDev\XbmcApi\Model\Video\Movie,
+    \NajiDev\XbmcApi\Model\Video\MovieSet,
+    \NajiDev\XbmcApi\Model\Video\MusicVideo,
+    \NajiDev\XbmcApi\Model\Video\Season,
+    \NajiDev\XbmcApi\Model\Video\TVShow;
 
 use \NajiDev\XbmcApi\Exception\NotImplementedException;
 
@@ -52,7 +52,7 @@ class VideoLibrary extends AbstractService
 	 * Retrieve details about a specific tv show episode
 	 *
 	 * @param $episodeId
-	 * @return \NajiDev\XbmcApi\DataType\Video\Details\Episode
+	 * @return \NajiDev\XbmcApi\Model\Video\Episode
 	 */
 	public function getEpisodeDetails($episodeId)
 	{
@@ -69,7 +69,7 @@ class VideoLibrary extends AbstractService
 	 *
 	 * @param int $tvshowid
 	 * @param int $season
-	 * @return \NajiDev\XbmcApi\DataType\Video\Details\Episode[]
+	 * @return \NajiDev\XbmcApi\Model\Video\Episode[]
 	 */
 	public function getEpisodes($tvshowid = null, $season = null)
 	{

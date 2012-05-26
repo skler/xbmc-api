@@ -2,7 +2,7 @@
 
 namespace NajiDev\XbmcApi\Service;
 
-use \NajiDev\XbmcApi\DataType\Application\Version,
+use \NajiDev\XbmcApi\Model\Application\Version,
     \NajiDev\XbmcApi\Exception\NotImplementedException;
 
 
@@ -74,7 +74,7 @@ class Application extends AbstractService
 	/**
 	 * Get the version of the application
 	 *
-	 * @return \NajiDev\XbmcApi\DataType\Application\Version
+	 * @return \NajiDev\XbmcApi\Model\Application\Version
 	 */
 	public function getVersion()
 	{
