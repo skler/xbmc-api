@@ -2,14 +2,19 @@
 
 namespace NajiDev\XbmcApi\Service;
 
+use \NajiDev\XbmcApi\Utils\IdentityMap;
+
 
 abstract class AbstractService
 {
 	private $xbmcConnector;
 
+	protected $identityMap;
+
 	public function __construct(XbmcConnector $xbmcConnector)
 	{
 		$this->xbmcConnector = $xbmcConnector;
+		$this->identityMap   = new IdentityMap();
 	}
 
 	protected function callXbmc($method, array $parameters = array())

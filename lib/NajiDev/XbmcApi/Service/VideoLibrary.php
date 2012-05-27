@@ -256,6 +256,9 @@ class VideoLibrary extends AbstractService
 		if (!is_int($tvshowId))
 			throw new \InvalidArgumentException('The $tvshowid has to be an integer');
 
+		if (null !== $show = $this->identityMap->get('NajiDev\XbmcApi\Model\Video\TVShow', $tvshowId))
+			return $show;
+
 		try
 		{
 			$response = $this->callXbmc('GetTVShowDetails', array(
@@ -263,7 +266,9 @@ class VideoLibrary extends AbstractService
 				'properties' => self::$tvshowProperties
 			));
 
-			return $this->buildTvShow($response->tvshowdetails);
+			$show = $this->buildTvShow($response->tvshowdetails);
+			$this->identityMap->add($show);
+			return $show;
 		}
 		catch (\InvalidArgumentException $e)
 		{
@@ -278,15 +283,17 @@ class VideoLibrary extends AbstractService
 	 */
 	public function getTVShows()
 	{
-		$service = $this;
-
 		$response = $this->callXbmc('GetTVShows', array(
 			'properties' => self::$tvshowProperties
 		));
 
 		$shows = array();
 		foreach ($response->tvshows as $show)
-			$shows[] = $this->buildTvShow($show);
+		{
+			$showObj = $this->buildTvShow($show);
+			$this->identityMap->add($showObj);
+			$shows[] = $showObj;
+		}
 
 		return $shows;
 	}
