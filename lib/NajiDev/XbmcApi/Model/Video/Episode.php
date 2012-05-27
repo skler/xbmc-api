@@ -43,11 +43,6 @@ class Episode extends File
 	protected $writer;
 
 	/**
-	 * @var int
-	 */
-	protected $episodeId;
-
-	/**
 	 * @var string
 	 */
 	protected $originaltitle;
@@ -73,6 +68,8 @@ class Episode extends File
 
 		if ($object instanceof \stdClass)
 		{
+			$this->id = $object->episodeid;
+
 			$this->setRaiting($object->rating);
 			$this->setTvshowid($object->tvshowid);
 			$this->setVotes($object->votes);
@@ -80,7 +77,6 @@ class Episode extends File
 			$this->setProductioncode($object->productioncode);
 			$this->setSeason($object->season);
 			$this->setWriter($object->writer);
-			$this->setEpisodeId($object->episodeid);
 			$this->setOriginaltitle($object->originaltitle);
 			$this->setCast($object->cast);
 			$this->setFirstaired($object->firstaired);
@@ -120,22 +116,6 @@ class Episode extends File
 	public function getEpisode()
 	{
 		return $this->episode;
-	}
-
-	/**
-	 * @param int $episodeId
-	 */
-	public function setEpisodeId($episodeId)
-	{
-		$this->episodeId = $episodeId;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getEpisodeId()
-	{
-		return $this->episodeId;
 	}
 
 	/**

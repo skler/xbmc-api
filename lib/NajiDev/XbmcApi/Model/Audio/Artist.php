@@ -41,11 +41,6 @@ class Artist extends Base
 	protected $born;
 
 	/**
-	 * @var int
-	 */
-	protected $artistid;
-
-	/**
 	 * @var string
 	 */
 	protected $yearsactive;
@@ -64,22 +59,6 @@ class Artist extends Base
 	 * @var string
 	 */
 	protected $mood;
-
-	/**
-	 * @param int $artistid
-	 */
-	public function setArtistid($artistid)
-	{
-		$this->artistid = $artistid;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getArtistid()
-	{
-		return $this->artistid;
-	}
 
 	/**
 	 * @param string $author

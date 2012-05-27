@@ -6,11 +6,6 @@ namespace NajiDev\XbmcApi\Model\Video;
 class MusicVideo extends File
 {
 	/**
-	 * @var int
-	 */
-	protected $musicvideoid;
-
-	/**
 	 * @var string
 	 */
 	protected $album;
@@ -86,22 +81,6 @@ class MusicVideo extends File
 	public function getGenre()
 	{
 		return $this->genre;
-	}
-
-	/**
-	 * @param int $musicvideoid
-	 */
-	public function setMusicvideoid($musicvideoid)
-	{
-		$this->musicvideoid = $musicvideoid;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getMusicvideoid()
-	{
-		return $this->musicvideoid;
 	}
 
 	/**

@@ -6,6 +6,11 @@ namespace NajiDev\XbmcApi\Model\Item;
 abstract class Base
 {
 	/**
+	 * @var int
+	 */
+	protected $id;
+
+	/**
 	 * @var string
 	 */
 	protected $label;
@@ -16,6 +21,14 @@ abstract class Base
 		{
 			$this->setLabel($object->label);
 		}
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
 	}
 
 	/**

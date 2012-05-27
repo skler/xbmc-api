@@ -16,11 +16,6 @@ class Song extends Media
 	protected $comment;
 
 	/**
-	 * @var int
-	 */
-	protected $songid;
-
-	/**
 	 * @var string
 	 */
 	protected $musicbrainzartistid;
@@ -244,22 +239,6 @@ class Song extends Media
 	public function getPlaycount()
 	{
 		return $this->playcount;
-	}
-
-	/**
-	 * @param int $songid
-	 */
-	public function setSongid($songid)
-	{
-		$this->songid = $songid;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getSongid()
-	{
-		return $this->songid;
 	}
 
 	/**

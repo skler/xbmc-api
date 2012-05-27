@@ -9,11 +9,6 @@ use \NajiDev\XbmcApi\Model\Video\Cast,
 class TVShow extends Item
 {
 	/**
-	 * @var int
-	 */
-	protected $id;
-
-	/**
 	 * @var string
 	 */
 	protected $episodeguide;
@@ -115,14 +110,6 @@ class TVShow extends Item
 			$this->setSorttitle($object->sorttitle);
 			$this->setGenre($object->genre);
 		}
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
 	}
 
 	public function setCast($cast)

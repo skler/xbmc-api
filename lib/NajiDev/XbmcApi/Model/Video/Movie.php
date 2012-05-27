@@ -6,7 +6,6 @@ use \NajiDev\XbmcApi\Model\Video\Cast,
     \NajiDev\XbmcApi\Model\Video\Streams;
 
 
-
 class Movie extends File
 {
 	/**
@@ -75,11 +74,6 @@ class Movie extends File
 	protected $genre;
 
 	/**
-	 * @var int
-	 */
-	protected $movieid;
-
-	/**
 	 * @var string
 	 */
 	protected $productioncode;
@@ -125,6 +119,8 @@ class Movie extends File
 
 		if ($object instanceof \stdClass)
 		{
+			$this->id = $object->movieid;
+
 			$this->setRating($object->rating);
 			$this->setSet($object->set);
 			$this->setYear($object->year);
@@ -138,7 +134,6 @@ class Movie extends File
 			$this->setStudio($object->studio);
 			$this->setShowlink($object->showlink);
 			$this->setGenre($object->genre);
-			$this->setMovieid($object->movieid);
 			$this->setProductioncode($object->productioncode);
 			$this->setCountry($object->country);
 			$this->setPremiered($object->premiered);
@@ -214,22 +209,6 @@ class Movie extends File
 	public function getImdbnummer()
 	{
 		return $this->imdbnummer;
-	}
-
-	/**
-	 * @param int $movieid
-	 */
-	public function setMovieid($movieid)
-	{
-		$this->movieid = $movieid;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getMovieid()
-	{
-		return $this->movieid;
 	}
 
 	/**

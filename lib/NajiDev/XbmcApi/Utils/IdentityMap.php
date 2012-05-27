@@ -2,12 +2,18 @@
 
 namespace NajiDev\XbmcApi\Utils;
 
+use \NajiDev\XbmcApi\Model\Item\Base;
+
 
 class IdentityMap
 {
 	protected $map = array();
 
-	public function add($entity)
+	/**
+	 * @param \NajiDev\XbmcApi\Model\Item\Base $entity
+	 * @throws \InvalidArgumentException
+	 */
+	public function add(Base $entity)
 	{
 		if (null === $id = $entity->getId())
 			throw new \InvalidArgumentException('Entity has to have an id');
@@ -28,10 +34,10 @@ class IdentityMap
 	}
 
 	/**
-	 * @param $entity
+	 * @param Base $entity
 	 * @return boolean
 	 */
-	public function isIn($entity)
+	public function isIn(Base$entity)
 	{
 		return $this->_isIn(get_class($entity), $entity->getId());
 	}
@@ -51,7 +57,11 @@ class IdentityMap
 		return array_key_exists($id, $this->map[$class]);
 	}
 
-	public function remove($entity)
+	/**
+	 * @param \NajiDev\XbmcApi\Model\Item\Base $entity
+	 * @return bool
+	 */
+	public function remove(Base $entity)
 	{
 		if ($this->isIn($entity))
 			return false;

@@ -28,11 +28,6 @@ class Album extends Media
 	/**
 	 * @var int
 	 */
-	protected $albumid;
-
-	/**
-	 * @var int
-	 */
 	protected $artistid;
 
 	/**
@@ -44,22 +39,6 @@ class Album extends Media
 	 * @var string
 	 */
 	protected $description;
-
-	/**
-	 * @param int $albumid
-	 */
-	public function setAlbumid($albumid)
-	{
-		$this->albumid = $albumid;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getAlbumid()
-	{
-		return $this->albumid;
-	}
 
 	/**
 	 * @param string $albumlabel
