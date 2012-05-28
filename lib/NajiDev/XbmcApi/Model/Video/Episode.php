@@ -2,7 +2,8 @@
 
 namespace NajiDev\XbmcApi\Model\Video;
 
-use \NajiDev\XbmcApi\Model\Video\Cast;
+use \NajiDev\XbmcApi\Model\Video\Cast,
+    \NajiDev\XbmcApi\Utils\LazyLoader;
 
 
 class Episode extends File
@@ -18,6 +19,11 @@ class Episode extends File
 	protected $tvshowid;
 
 	/**
+	 * @var closure
+	 */
+	protected $tvshow;
+
+	/**
 	 * @var string
 	 */
 	protected $votes;
@@ -25,7 +31,7 @@ class Episode extends File
 	/**
 	 * @var int
 	 */
-	protected $episode;
+	protected $episodeNumber;
 
 	/**
 	 * @var string
@@ -34,6 +40,11 @@ class Episode extends File
 
 	/**
 	 * @var int
+	 */
+	protected $seasonNumber;
+
+	/**
+	 * @var closure
 	 */
 	protected $season;
 
@@ -66,6 +77,9 @@ class Episode extends File
 	{
 		parent::__construct($object);
 
+		$this->setTvshow(null);
+		$this->setSeason(null);
+
 		if ($object instanceof \stdClass)
 		{
 			$this->id = $object->episodeid;
@@ -73,9 +87,9 @@ class Episode extends File
 			$this->setRaiting($object->rating);
 			$this->setTvshowid($object->tvshowid);
 			$this->setVotes($object->votes);
-			$this->setEpisode($object->episode);
+			$this->setEpisodeNumber($object->episode);
 			$this->setProductioncode($object->productioncode);
-			$this->setSeason($object->season);
+			$this->setSeasonNumber($object->season);
 			$this->setWriter($object->writer);
 			$this->setOriginaltitle($object->originaltitle);
 			$this->setCast($object->cast);
@@ -103,19 +117,19 @@ class Episode extends File
 	}
 
 	/**
-	 * @param int $episode
+	 * @param int $episodeNumber
 	 */
-	public function setEpisode($episode)
+	public function setEpisodeNumber($episodeNumber)
 	{
-		$this->episode = $episode;
+		$this->episodeNumber = $episodeNumber;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getEpisode()
+	public function getEpisodeNumber()
 	{
-		return $this->episode;
+		return $this->episodeNumber;
 	}
 
 	/**
@@ -183,19 +197,35 @@ class Episode extends File
 	}
 
 	/**
-	 * @param int $season
+	 * @param int $seasonNumber
 	 */
-	public function setSeason($season)
+	public function setSeasonNumber($seasonNumber)
 	{
-		$this->season = $season;
+		$this->seasonNumber = $seasonNumber;
 	}
 
 	/**
 	 * @return int
 	 */
+	public function getSeasonNumber()
+	{
+		return $this->seasonNumber;
+	}
+
+	/**
+	 * @return Season|null
+	 */
 	public function getSeason()
 	{
-		return $this->season;
+		return call_user_func($this->season);
+	}
+
+	/**
+	 * @param Season|closure $season a Season object or a closure, which returns one
+	 */
+	public function setSeason($season)
+	{
+		$this->season = new LazyLoader($season);
 	}
 
 	/**
@@ -228,6 +258,22 @@ class Episode extends File
 	public function getTvshowid()
 	{
 		return $this->tvshowid;
+	}
+
+	/**
+	 * @return TVShow|null
+	 */
+	public function getTvshow()
+	{
+		return call_user_func($this->tvshow);
+	}
+
+	/**
+	 * @param TVShow|closure $tvshow a TVShow object or closure, which returns one
+	 */
+	public function setTvshow($tvshow)
+	{
+		$this->tvshow = new LazyLoader($tvshow);
 	}
 
 	/**

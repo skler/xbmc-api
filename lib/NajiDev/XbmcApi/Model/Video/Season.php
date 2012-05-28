@@ -2,13 +2,15 @@
 
 namespace NajiDev\XbmcApi\Model\Video;
 
+use NajiDev\XbmcApi\Utils\LazyLoader;
+
 
 class Season extends Base
 {
 	/**
 	 * @var int
 	 */
-	protected $season;
+	protected $seasonNumber;
 
 	/**
 	 * @var int
@@ -16,45 +18,71 @@ class Season extends Base
 	protected $tvshowid;
 
 	/**
+	 * @var closure
+	 */
+	protected $tvshow;
+
+	/**
 	 * @var int
 	 */
-	protected $episode;
+	protected $episodeCount;
 
 	/**
 	 * @var string
 	 */
 	protected $showtitle;
 
-	/**
-	 * @param int $episode
-	 */
-	public function setEpisode($episode)
+	public function __construct($object = null)
 	{
-		$this->episode = $episode;
+		parent::__construct($object);
+
+		$this->setTvshow(function ()
+		{
+			return null;
+		});
+
+		if ($object instanceof \stdClass)
+		{
+			// xbmc does not provide an id for a season object. Concatinating the tvshowid and the
+			// season number should be rather unique
+			$this->id = $object->tvshowid . '-' . $object->season;
+
+			$this->setSeasonNumber($object->season);
+			$this->setTvshowid($object->tvshowid);
+			$this->setEpisodeCount($object->episode);
+		}
+	}
+
+	/**
+	 * @param int $episodeCount
+	 */
+	public function setEpisodeCount($episodeCount)
+	{
+		$this->episodeCount = $episodeCount;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getEpisode()
+	public function getEpisodeCount()
 	{
-		return $this->episode;
+		return $this->episodeCount;
 	}
 
 	/**
-	 * @param int $season
+	 * @param int $seasonNumber
 	 */
-	public function setSeason($season)
+	public function setSeasonNumber($seasonNumber)
 	{
-		$this->season = $season;
+		$this->seasonNumber = $seasonNumber;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getSeason()
+	public function getSeasonNumber()
 	{
-		return $this->season;
+		return $this->seasonNumber;
 	}
 
 	/**
@@ -87,5 +115,21 @@ class Season extends Base
 	public function getTvshowid()
 	{
 		return $this->tvshowid;
+	}
+
+	/**
+	 * @return TVShow|null
+	 */
+	public function getTvshow()
+	{
+		return call_user_func($this->tvshow);
+	}
+
+	/**
+	 * @param TVShow|closure $tvshow a tvshow or a closure, which returns a TVShow object
+	 */
+	public function setTvshow($tvshow)
+	{
+		$this->tvshow = new LazyLoader($tvshow);
 	}
 }

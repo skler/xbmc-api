@@ -54,6 +54,14 @@ class VideoLibrary extends AbstractService
 		'fanart', 'thumbnail'
 	);
 
+	protected static $seasonProperties = array(
+		'season', 'tvshowid', 'episode', 'showtitle',
+
+		'playcount',
+
+		'fanart', 'thumbnail'
+	);
+
 	/**
 	 * Cleans the video library from non-existent items
 	 *
@@ -79,14 +87,19 @@ class VideoLibrary extends AbstractService
 	 * @param $episodeId
 	 * @return \NajiDev\XbmcApi\Model\Video\Episode
 	 */
-	public function getEpisodeDetails($episodeId)
+	public function getEpisode($episodeId)
 	{
+		if (null !== $episode= $this->identityMap->get('NajiDev\XbmcApi\Model\Video\Episode', $episodeId))
+			return $episode;
+
 		$response = $this->callXbmc('GetEpisodeDetails', array(
 			'episodeid'  => $episodeId,
 			'properties' => self::$episodeProperties
 		));
 
-		return new Episode($response->episodedetails);
+		$episode = $this->buildEpisode($response->episodedetails);
+		$this->identityMap->add($episode);
+		return $episode;
 	}
 
 	/**
@@ -111,7 +124,11 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-			$episodes[] = new Episode($episode);
+		{
+			$episode = $this->buildEpisode($episode);
+			$this->identityMap->add($episode);
+			$episodes[] = $episode;
+		}
 
 		return $episodes;
 	}
@@ -206,7 +223,11 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-			$episodes[] = new Episode($episode);
+		{
+			$episode = $this->buildEpisode($episode);
+			$this->identityMap->add($episode);
+			$episodes[] = $episode;
+		}
 
 		return $episodes;
 	}
@@ -236,12 +257,30 @@ class VideoLibrary extends AbstractService
 	/**
 	 * Retrieve all tv seasons
 	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @param int $tvshowid
 	 * @return Season[]
 	 */
-	public function getSeasons()
+	public function getSeasons($tvshowid)
 	{
-		throw new NotImplementedException;
+		$response = $this->callXbmc('GetSeasons', array(
+			'tvshowid'   => $tvshowid,
+			'properties' => self::$seasonProperties
+		));
+
+		$service = $this;
+		$seasons = array();
+		foreach ($response->seasons as $season)
+		{
+			$seasonObj = new Season($season);
+			$seasonObj->setTvshow(function() use ($service, $seasonObj)
+			{
+				return $service->getTVShow($seasonObj->getTvshowid());
+			});
+			$this->identityMap->add($seasonObj);
+			$seasons[] = $seasonObj;
+		}
+
+		return $seasons;
 	}
 
 	/**
@@ -313,11 +352,46 @@ class VideoLibrary extends AbstractService
 		$service = $this;
 
 		$showObj = new TVShow($show);
-		$showObj->setEpisodes(function() use ($showObj, $service)
+		$id      = $showObj->getId();
+		$showObj->setEpisodes(function() use ($service, $id)
 		{
-			return $service->getEpisodes($showObj->getId());
+			return $service->getEpisodes($id);
+		});
+		$showObj->setSeasons(function() use ($service, $id)
+		{
+		 	return $service->getSeasons($id);
 		});
 
 		return $showObj;
+	}
+
+	/**
+	 * @param \stdClass $episode
+	 * @return \NajiDev\XbmcApi\Model\Video\Episode
+	 */
+	protected function buildEpisode(\stdClass $episode)
+	{
+		$service = $this;
+
+		$episodeObj = new Episode($episode);
+		$episodeObj->setTvshow(function() use ($service, $episodeObj)
+		{
+			return $service->getTVShow($episodeObj->getTvshowid());
+		});
+
+		$episodeObj->setSeason(function() use ($service, $episodeObj)
+		{
+			$seasons = $service->getSeasons($episodeObj->getTvshowid());
+
+			foreach ($seasons as $season)
+			{
+				if ($season->getSeasonNumber() == $episodeObj->getSeasonNumber())
+					return $season;
+			}
+
+			return null;
+		});
+
+		return $episodeObj;
 	}
 }

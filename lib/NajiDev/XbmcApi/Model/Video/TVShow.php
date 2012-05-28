@@ -78,11 +78,21 @@ class TVShow extends Item
 	 */
 	protected $episodes;
 
+	/**
+	 * @var closure
+	 */
+	protected $seasons;
+
 	public function __construct($object = null)
 	{
 		parent::__construct($object);
 
-		$this->setEpisodes(function ()
+		$this->setEpisodes(function()
+		{
+			return array();
+		});
+
+		$this->setSeasons(function()
 		{
 			return array();
 		});
@@ -315,7 +325,7 @@ class TVShow extends Item
 	}
 
 	/**
-	 * @return mixed
+	 * @return Episode[]
 	 */
 	public function getEpisodes()
 	{
@@ -328,5 +338,21 @@ class TVShow extends Item
 	public function setEpisodes($episodes)
 	{
 		$this->episodes = new LazyLoader($episodes);
+	}
+
+	/**
+	 * @return Season|null
+	 */
+	public function getSeasons()
+	{
+		return call_user_func($this->seasons);
+	}
+
+	/**
+	 * @param Season|closure $seasons a Season object or a closure, which returns one
+	 */
+	public function setSeasons($seasons)
+	{
+		$this->seasons = new LazyLoader($seasons);
 	}
 }
