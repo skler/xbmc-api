@@ -2,25 +2,50 @@
 
 namespace NajiDev\XbmcApi\Model\Video;
 
+use \NajiDev\XbmcApi\Model\Item\Base,
+    \NajiDev\XbmcApi\Utils\LazyLoader;
 
-class MovieSet extends Media
+
+class MovieSet extends Base
 {
 	/**
-	 * @var int
+	 * @var int[]
 	 */
-	protected $id;
+	protected $movieIds = array();
 
 	/**
-	 * @var Movie[]
+	 * @var string[]
+	 */
+	protected $movieNames = array();
+
+	/**
+	 * @var closure
 	 */
 	protected $movies;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		$this->setMovies(array());
+
+		if ($object instanceof \stdClass)
+		{
+			$this->id = $object->setid;
+			foreach ($object->items->movies as $movie)
+			{
+				$this->movieIds[]   = $movie->movieid;
+				$this->movieNames[] = $movie->label;
+			}
+		}
+	}
+
 	/**
-	 * @param $movies Movie[]
+	 * @param Movie[]|closure $movies array of Movie objects or a closure, which provides such an array
 	 */
 	public function setMovies($movies)
 	{
-		$this->movies = $movies;
+		$this->movies = new LazyLoader($movies);
 	}
 
 	/**
@@ -28,6 +53,49 @@ class MovieSet extends Media
 	 */
 	public function getMovies()
 	{
-		return $this->movies;
+		return call_user_func($this->movies);
 	}
+
+	public function setMovieIds($movieIds)
+	{
+		$this->movieIds = $movieIds;
+	}
+
+	public function getMovieIds()
+	{
+		return $this->movieIds;
+	}
+
+	public function setMovieNames($movieNames)
+	{
+		$this->movieNames = $movieNames;
+	}
+
+	public function getMovieNames()
+	{
+		return $this->movieNames;
+	}
+
+	/**
+	 * Always triggers an exception
+	 *
+	 * @throws \Exception
+	 */
+	public function getPlaycount()
+	{
+		throw new \Exception('MovieSets do not have a playcount');
+	}
+
+	/**
+	 * Always triggers an exception
+	 *
+	 * @param int $playcount
+	 * @throws \Exception
+	 */
+	public function setPlaycount($playcount)
+	{
+		throw new \Exception('MovieSets do not have a playcount');
+	}
+
+
 }

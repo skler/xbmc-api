@@ -7,9 +7,11 @@ use \NajiDev\XbmcApi\Utils\IdentityMap;
 
 abstract class AbstractService
 {
+	const MODEL_NAMESPACE = 'NajiDev\XbmcApi\Model';
+
 	private $xbmcConnector;
 
-	protected $identityMap;
+	private $identityMap;
 
 	public function __construct(XbmcConnector $xbmcConnector)
 	{
@@ -34,5 +36,15 @@ abstract class AbstractService
 			));
 
 		return $response->$key;
+	}
+
+	protected function addToIdentityMap($entity)
+	{
+		$this->identityMap->add($entity);
+	}
+
+	protected function getByIdentityMap($class, $id)
+	{
+		$this->identityMap->get(self::MODEL_NAMESPACE . '\\' . $class, $id);
 	}
 }

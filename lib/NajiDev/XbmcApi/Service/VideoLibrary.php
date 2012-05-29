@@ -9,8 +9,6 @@ use \NajiDev\XbmcApi\Model\Video\Episode,
     \NajiDev\XbmcApi\Model\Video\Season,
     \NajiDev\XbmcApi\Model\Video\TVShow;
 
-use \NajiDev\XbmcApi\Exception\NotImplementedException;
-
 
 class VideoLibrary extends AbstractService
 {
@@ -73,33 +71,29 @@ class VideoLibrary extends AbstractService
 	}
 
 	/**
-	 * Exports all items from the video library
-	 * @throws NotImplementedException
-	 */
-	public function export()
-	{
-		throw new NotImplementedException;
-	}
-
-	/**
 	 * Retrieve details about a specific tv show episode
 	 *
 	 * @param $episodeId
-	 * @return \NajiDev\XbmcApi\Model\Video\Episode
+	 * @return \NajiDev\XbmcApi\Model\Video\Episode|null
 	 */
 	public function getEpisode($episodeId)
 	{
-		if (null !== $episode= $this->identityMap->get('NajiDev\XbmcApi\Model\Video\Episode', $episodeId))
+		if (null !== $episode = $this->getByIdentityMap('Video\Episode', $episodeId))
 			return $episode;
 
-		$response = $this->callXbmc('GetEpisodeDetails', array(
-			'episodeid'  => $episodeId,
-			'properties' => self::$episodeProperties
-		));
+		try
+		{
+			$response = $this->callXbmc('GetEpisodeDetails', array(
+					'episodeid'  => $episodeId,
+					'properties' => self::$episodeProperties
+				));
 
-		$episode = $this->buildEpisode($response->episodedetails);
-		$this->identityMap->add($episode);
-		return $episode;
+			return $this->buildEpisode($response->episodedetails);
+		}
+		catch (\InvalidArgumentException $e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -124,51 +118,90 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-		{
-			$episode = $this->buildEpisode($episode);
-			$this->identityMap->add($episode);
-			$episodes[] = $episode;
-		}
+			$episodes[] = $this->buildEpisode($episode);
 
 		return $episodes;
 	}
 
-	public function getGenres()
-	{
-		throw new NotImplementedException;
-	}
-
 	/**
+	 * Retrieve details about a specific movie
+	 *
 	 * @param $movieId
-	 * @return Movie
+	 * @return Movie|null A Movie object, if found. Null otherwise.
 	 */
-	public function getMovieDetails($movieId)
+	public function getMovie($movieId)
 	{
-		$response = $this->callXbmc('GetMovieDetails', array(
-			'movieid'    => $movieId,
-			'properties' => self::$movieProperties
-		));
+		if (null !== $movie = $this->getByIdentityMap('Video\Movie', $movieId))
+			return $movie;
 
-		return new Movie($response->moviedetails);
+		try
+		{
+			$response = $this->callXbmc('GetMovieDetails', array(
+				'movieid'    => $movieId,
+				'properties' => self::$movieProperties
+			));
+
+			return $this->buildMovie($response->moviedetails);
+		}
+		catch (\InvalidArgumentException $e)
+		{
+			return null;
+		}
 	}
 
 	/**
-	 * @param $setid
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
-	 * @return MovieSet
+	 * @param int $setid
+	 * @return MovieSet|null A MovieSet object, if found. Null otherwise
 	 */
 	public function getMovieSet($setid)
 	{
-		throw new NotImplementedException;
+		if (null !== $movieSet = $this->getByIdentityMap('Video\MovieSet', $setid))
+			return $movieSet;
+
+		try
+		{
+			$response = $this->callXbmc('GetMovieSetDetails', array(
+				'setid'	=> $setid
+			));
+
+			return $this->buildMovieSet($response->setdetails);
+		}
+		catch (\InvalidArgumentException $e)
+		{
+			return null;
+		}
 	}
 
 	/**
+	 * Beware: This costs a bit more then the other ones. We query the xbmc instance for the list of the sets and then
+	 * fetch for each the details
+	 *
+	 * @see VideoLibrary::getMovieSetsAsIds
 	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
 	 * @return MovieSet[]
 	 */
 	public function getMovieSets()
 	{
-		throw new NotImplementedException;
+		$ids = array_keys($this->getMovieSetsAsArray());
+
+		foreach ($ids as $id)
+			$movieSets[] = $this->getMovieSet($id);
+
+		return $movieSets;
+	}
+
+	/**
+	 * @return array build this way: MovieSetId => MovieSetName
+	 */
+	public function getMovieSetsAsArray()
+	{
+		$response = $this->callXbmc('GetMovieSets');
+
+		$movieSets = array();
+		foreach ($response->sets as $movieSet)
+			$movieSets[$movieSet->setid] = $movieSet->label;
+
+		return $movieSets;
 	}
 
 
@@ -185,29 +218,9 @@ class VideoLibrary extends AbstractService
 
 		$movies = array();
 		foreach ($response->movies as $movie)
-			$movies[] = new Movie($movie);
+			$movies[] = $this->buildMovie($movie);
 
 		return $movies;
-	}
-
-	/**
-	 * Retrieve details about a specific music video
-	 *
-	 * @throws NotImplementedException
-	 */
-	public function getMusicVideoDetails()
-	{
-		throw new NotImplementedException;
-	}
-
-	/**
-	 * Retrieve all music videos
-	 *
-	 * @throws NotImplementedException
-	 */
-	public function getMusicVideos()
-	{
-		throw new NotImplementedException;
 	}
 
 	/**
@@ -223,11 +236,7 @@ class VideoLibrary extends AbstractService
 
 		$episodes = array();
 		foreach ($response->episodes as $episode)
-		{
-			$episode = $this->buildEpisode($episode);
-			$this->identityMap->add($episode);
-			$episodes[] = $episode;
-		}
+			$episodes[] = $this->buildEpisode($episode);
 
 		return $episodes;
 	}
@@ -235,23 +244,19 @@ class VideoLibrary extends AbstractService
 	/**
 	 * Retrieve all recently added movies
 	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
 	 * @return Movie[]
 	 */
 	public function getRecentlyAddedMovies()
 	{
-		throw new NotImplementedException;
-	}
+		$response = $this->callXbmc('GetRecentlyAddedMovies', array(
+			'properties' => self::$movieProperties
+		));
 
-	/**
-	 * Retrieve all recently added music videos
-	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
-	 * @return MusicVideo[]
-	 */
-	public function getRecentlyAddedMusicVideos()
-	{
-		throw new NotImplementedException;
+		$movies = array();
+		foreach($response->movies as $movie)
+			$movies[] = $this->buildMovie($movie);
+
+		return $movies;
 	}
 
 	/**
@@ -276,7 +281,7 @@ class VideoLibrary extends AbstractService
 			{
 				return $service->getTVShow($seasonObj->getTvshowid());
 			});
-			$this->identityMap->add($seasonObj);
+			$this->addToIdentityMap($seasonObj);
 			$seasons[] = $seasonObj;
 		}
 
@@ -295,7 +300,7 @@ class VideoLibrary extends AbstractService
 		if (!is_int($tvshowId))
 			throw new \InvalidArgumentException('The $tvshowid has to be an integer');
 
-		if (null !== $show = $this->identityMap->get('NajiDev\XbmcApi\Model\Video\TVShow', $tvshowId))
+		if (null !== $show = $this->getByIdentityMap('Video\TVShow', $tvshowId))
 			return $show;
 
 		try
@@ -305,9 +310,7 @@ class VideoLibrary extends AbstractService
 				'properties' => self::$tvshowProperties
 			));
 
-			$show = $this->buildTvShow($response->tvshowdetails);
-			$this->identityMap->add($show);
-			return $show;
+			return $this->buildTvShow($response->tvshowdetails);
 		}
 		catch (\InvalidArgumentException $e)
 		{
@@ -328,11 +331,7 @@ class VideoLibrary extends AbstractService
 
 		$shows = array();
 		foreach ($response->tvshows as $show)
-		{
-			$showObj = $this->buildTvShow($show);
-			$this->identityMap->add($showObj);
-			$shows[] = $showObj;
-		}
+			$shows = $this->buildTvShow($show);
 
 		return $shows;
 	}
@@ -340,11 +339,11 @@ class VideoLibrary extends AbstractService
 	/**
 	 * Scans the video sources for new library items
 	 *
-	 * @throws \NajiDev\XbmcApi\Exception\NotImplementedException
+	 * @return bool
 	 */
 	public function scan()
 	{
-		throw new NotImplementedException;
+		return 'OK' === $this->callXbmc('Scan');
 	}
 
 	protected function buildTvShow(\stdClass $show)
@@ -361,6 +360,8 @@ class VideoLibrary extends AbstractService
 		{
 		 	return $service->getSeasons($id);
 		});
+
+		$this->addToIdentityMap($showObj);
 
 		return $showObj;
 	}
@@ -392,6 +393,55 @@ class VideoLibrary extends AbstractService
 			return null;
 		});
 
+		$this->addToIdentityMap($episodeObj);
+
 		return $episodeObj;
+	}
+
+	/**
+	 * @param \stdClass $movie
+	 * @return \NajiDev\XbmcApi\Model\Video\Movie
+	 */
+	protected function buildMovie(\stdClass $movie)
+	{
+		$service = $this;
+
+		$movieObj = new Movie($movie);
+
+		$movieObj->setMovieSets(function() use ($service, $movieObj)
+		{
+			$movieSets = array();
+			foreach ($movieObj->getMovieSetIds() as $movieSetId)
+				$movieSets[] = $service->getMovieSet($movieSetId);
+
+			return $movieSets;
+		});
+
+		$this->addToIdentityMap($movieObj);
+
+		return $movieObj;
+	}
+
+	/**
+	 * @param \stdClass $movieSet
+	 * @return \NajiDev\XbmcApi\Model\Video\MovieSet
+	 */
+	protected function buildMovieSet(\stdClass $movieSet)
+	{
+		$service = $this;
+
+		$movieSetObj = new MovieSet($movieSet);
+		$movieSetObj->setMovies(function() use($movieSetObj, $service)
+		{
+			$movies = array();
+			foreach ($movieSetObj->getMovieIds() as $movieId)
+				$movies[] = $service->getMovie($movieId);
+
+			return $movies;
+		});
+
+		$this->addToIdentityMap($movieSetObj);
+
+		return $movieSetObj;
 	}
 }

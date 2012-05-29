@@ -1,9 +1,10 @@
 <?php
 
-namespace NajiDev\XbmcApi\Model\Video\Details;
+namespace NajiDev\XbmcApi\Model\Video;
 
 use \NajiDev\XbmcApi\Model\Video\Cast,
-    \NajiDev\XbmcApi\Model\Video\Streams;
+    \NajiDev\XbmcApi\Model\Video\Streams,
+	\NajiDev\XbmcApi\Utils\LazyLoader;
 
 
 class Movie extends File
@@ -14,19 +15,9 @@ class Movie extends File
 	protected $rating;
 
 	/**
-	 * @var string[]
-	 */
-	protected $set = array();
-
-	/**
 	 * @var int
 	 */
 	protected $year;
-
-	/**
-	 * @var int[]
-	 */
-	protected $setid = array();
 
 	/**
 	 * @var string
@@ -113,18 +104,45 @@ class Movie extends File
 	 */
 	protected $trailer;
 
+	/**
+	 * @var string[]
+	 */
+	protected $set = array();
+
+	/**
+	 * @var int[]
+	 */
+	protected $setid = array();
+
+	/**
+	 * @var int[]
+	 */
+	protected $movieSetIds = array();
+
+	/**
+	 * @var string[]
+	 */
+	protected $movieSetNames = array();
+
+	/**
+	 * @var closure
+	 */
+	protected $movieSets;
+
 	public function __construct($object = null)
 	{
 		parent::__construct($object);
+
+		$this->setMovieSets(array());
 
 		if ($object instanceof \stdClass)
 		{
 			$this->id = $object->movieid;
 
 			$this->setRating($object->rating);
-			$this->setSet($object->set);
+			$this->setMovieSetIds($object->setid);
+			$this->setMovieSetNames($object->set);
 			$this->setYear($object->year);
-			$this->setSetid($object->setid);
 			$this->setVotes($object->votes);
 			$this->setTagline($object->tagline);
 			$this->setWriter($object->writer);
@@ -307,26 +325,6 @@ class Movie extends File
 		return $this->rating;
 	}
 
-	public function setSet($set)
-	{
-		$this->set = $set;
-	}
-
-	public function getSet()
-	{
-		return $this->set;
-	}
-
-	public function setSetid($setid)
-	{
-		$this->setid = $setid;
-	}
-
-	public function getSetid()
-	{
-		return $this->setid;
-	}
-
 	/**
 	 * @param string $showlink
 	 */
@@ -469,5 +467,53 @@ class Movie extends File
 	public function getYear()
 	{
 		return $this->year;
+	}
+
+	/**
+	 * @param MovieSet[]|closure $movieSets An arry of MovieSet objects or a closure, which returns such an array
+	 */
+	public function setMovieSets($movieSets)
+	{
+		$this->movieSets = new LazyLoader($movieSets);
+	}
+
+	/**
+	 * @return MovieSet[]
+	 */
+	public function getMovieSets()
+	{
+		return call_user_func($this->movieSets);
+	}
+
+	/**
+	 * @param int[] $movieSetIds
+	 */
+	public function setMovieSetIds($movieSetIds)
+	{
+		$this->movieSetIds = $movieSetIds;
+	}
+
+	/**
+	 * @return int[]
+	 */
+	public function getMovieSetIds()
+	{
+		return $this->movieSetIds;
+	}
+
+	/**
+	 * @param string[] $movieSetNames
+	 */
+	public function setMovieSetNames($movieSetNames)
+	{
+		$this->movieSetNames = $movieSetNames;
+	}
+
+	/**
+	 * @return string[]
+	 */
+	public function getMovieSetNames()
+	{
+		return $this->movieSetNames;
 	}
 }
