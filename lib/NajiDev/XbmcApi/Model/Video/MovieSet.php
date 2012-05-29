@@ -75,27 +75,4 @@ class MovieSet extends Base
 	{
 		return $this->movieNames;
 	}
-
-	/**
-	 * Always triggers an exception
-	 *
-	 * @throws \Exception
-	 */
-	public function getPlaycount()
-	{
-		throw new \Exception('MovieSets do not have a playcount');
-	}
-
-	/**
-	 * Always triggers an exception
-	 *
-	 * @param int $playcount
-	 * @throws \Exception
-	 */
-	public function setPlaycount($playcount)
-	{
-		throw new \Exception('MovieSets do not have a playcount');
-	}
-
-
 }
