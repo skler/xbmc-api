@@ -355,4 +355,12 @@ class TVShow extends Item
 	{
 		$this->seasons = new LazyLoader($seasons);
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'episodeguide', 'episode', 'imdbnumber', 'rating', 'mpaa', 'year', 'votes', 'premiered', 'originaltitle',
+			'cast', 'studio', 'sorttitle', 'genre'
+		));
+	}
 }

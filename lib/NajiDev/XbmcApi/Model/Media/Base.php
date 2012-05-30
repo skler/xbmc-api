@@ -57,4 +57,11 @@ abstract class Base extends \NajiDev\XbmcApi\Model\Item\Base
 	{
 		return $this->thumbnail;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'fanart', 'thumbnail'
+		));
+	}
 }

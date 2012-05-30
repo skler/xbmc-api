@@ -12,54 +12,6 @@ use \NajiDev\XbmcApi\Model\Video\Episode,
 
 class VideoLibrary extends AbstractService
 {
-	protected static $movieProperties = array(
-		'director', 'streamdetails', 'runtime', 'resume', 'rating', 'set', 'year', 'setid', 'votes', 'tagline',
-		'writer', 'plotoutline', 'sorttitle', 'imdbnumber', 'studio', 'showlink', 'genre', 'productioncode', 'country',
-		'premiered', 'originaltitle', 'cast', 'mpaa', 'top250', 'trailer',
-
-		'plot', 'lastplayed', 'file',
-
-		'title',
-
-		'playcount',
-
-		'fanart', 'thumbnail',
-	);
-
-	protected static $episodeProperties = array(
-		'director', 'streamdetails', 'runtime', 'resume', 'rating', 'tvshowid', 'votes', 'episode', 'productioncode',
-		'season', 'writer', 'originaltitle', 'cast', 'firstaired', 'showtitle',
-
-		'plot', 'lastplayed', 'file',
-
-		'title',
-
-		'playcount',
-
-		'fanart', 'thumbnail',
-	);
-
-	protected static $tvshowProperties = array(
-		'episodeguide', 'episode', 'imdbnumber', 'rating', 'mpaa', 'year', 'votes', 'premiered', 'originaltitle',
-		'cast', 'studio', 'sorttitle', 'genre',
-
-		'plot', 'lastplayed', 'file',
-
-		'title',
-
-		'playcount',
-
-		'fanart', 'thumbnail'
-	);
-
-	protected static $seasonProperties = array(
-		'season', 'tvshowid', 'episode', 'showtitle',
-
-		'playcount',
-
-		'fanart', 'thumbnail'
-	);
-
 	/**
 	 * Cleans the video library from non-existent items
 	 *
@@ -85,7 +37,7 @@ class VideoLibrary extends AbstractService
 		{
 			$response = $this->callXbmc('GetEpisodeDetails', array(
 					'episodeid'  => $episodeId,
-					'properties' => self::$episodeProperties
+					'properties' => Episode::getFields()
 				));
 
 			return $this->buildEpisode($response->episodedetails);
@@ -106,7 +58,7 @@ class VideoLibrary extends AbstractService
 	public function getEpisodes($tvshowid = null, $season = null)
 	{
 		$params = array(
-			'properties' => self::$episodeProperties
+			'properties' => Episode::getFields()
 		);
 
 		if (is_int($tvshowid))
@@ -138,7 +90,7 @@ class VideoLibrary extends AbstractService
 		{
 			$response = $this->callXbmc('GetMovieDetails', array(
 				'movieid'    => $movieId,
-				'properties' => self::$movieProperties
+				'properties' => Movie::getFields()
 			));
 
 			return $this->buildMovie($response->moviedetails);
@@ -213,7 +165,7 @@ class VideoLibrary extends AbstractService
 	public function getMovies()
 	{
 		$response = $this->callXbmc('GetMovies', array(
-			'properties' => self::$movieProperties
+			'properties' => Movie::getFields()
 		));
 
 		$movies = array();
@@ -231,7 +183,7 @@ class VideoLibrary extends AbstractService
 	public function getRecentlyAddedEpisodes()
 	{
 		$response = $this->callXbmc('GetRecentlyAddedEpisodes', array(
-			'properties' => self::$episodeProperties
+			'properties' => Episode::getFields()
 		));
 
 		$episodes = array();
@@ -249,7 +201,7 @@ class VideoLibrary extends AbstractService
 	public function getRecentlyAddedMovies()
 	{
 		$response = $this->callXbmc('GetRecentlyAddedMovies', array(
-			'properties' => self::$movieProperties
+			'properties' => Movie::getFields()
 		));
 
 		$movies = array();
@@ -269,7 +221,7 @@ class VideoLibrary extends AbstractService
 	{
 		$response = $this->callXbmc('GetSeasons', array(
 			'tvshowid'   => $tvshowid,
-			'properties' => self::$seasonProperties
+			'properties' => Season::getFields()
 		));
 
 		$service = $this;
@@ -307,7 +259,7 @@ class VideoLibrary extends AbstractService
 		{
 			$response = $this->callXbmc('GetTVShowDetails', array(
 				'tvshowid'   => $tvshowId,
-				'properties' => self::$tvshowProperties
+				'properties' => TVShow::getFields()
 			));
 
 			return $this->buildTvShow($response->tvshowdetails);
@@ -326,7 +278,7 @@ class VideoLibrary extends AbstractService
 	public function getTVShows()
 	{
 		$response = $this->callXbmc('GetTVShows', array(
-			'properties' => self::$tvshowProperties
+			'properties' => TVShow::getFields()
 		));
 
 		$shows = array();

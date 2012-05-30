@@ -132,4 +132,11 @@ class Season extends Base
 	{
 		$this->tvshow = new LazyLoader($tvshow);
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'season', 'tvshowid', 'episode', 'showtitle',
+		));
+	}
 }

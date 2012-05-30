@@ -46,4 +46,9 @@ abstract class Base
 	{
 		return $this->label;
 	}
+
+	public static function getFields()
+	{
+		return array();
+	}
 }

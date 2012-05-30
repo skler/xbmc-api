@@ -35,4 +35,11 @@ abstract class Media extends Base
 	{
 		return $this->title;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'title'
+		));
+	}
 }

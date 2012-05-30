@@ -79,4 +79,11 @@ abstract class Item extends Media
 	{
 		return $this->plot;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'plot', 'lastplayed', 'file'
+		));
+	}
 }

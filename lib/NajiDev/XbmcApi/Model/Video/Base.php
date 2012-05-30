@@ -35,4 +35,11 @@ abstract class Base extends \NajiDev\XbmcApi\Model\Media\Base
 	{
 		return $this->playcount;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'playcount'
+		));
+	}
 }

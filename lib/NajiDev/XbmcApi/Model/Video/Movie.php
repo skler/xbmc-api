@@ -516,4 +516,13 @@ class Movie extends File
 	{
 		return $this->movieSetNames;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'rating', 'set', 'year', 'setid', 'votes', 'tagline', 'writer', 'plotoutline', 'sorttitle', 'imdbnumber',
+			'studio', 'showlink', 'genre', 'productioncode', 'country', 'premiered', 'originaltitle', 'cast', 'mpaa',
+			'top250', 'trailer',
+		));
+	}
 }

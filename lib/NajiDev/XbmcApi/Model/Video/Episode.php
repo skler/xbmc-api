@@ -307,4 +307,12 @@ class Episode extends File
 	{
 		return $this->writer;
 	}
+
+	public static function getFields()
+	{
+		return array_merge(parent::getFields(), array(
+			'rating', 'tvshowid', 'votes', 'episode', 'productioncode', 'season', 'writer', 'originaltitle', 'cast',
+			'firstaired', 'showtitle'
+		));
+	}
 }

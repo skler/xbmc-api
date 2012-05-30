@@ -28,6 +28,19 @@ abstract class File extends Item
 	 */
 	protected $resume;
 
+	public function __construct($object = null)
+	{
+		parent::__construct($object);
+
+		if ($object instanceof \stdClass)
+		{
+			$this->setDirector($object->director);
+			$this->setResume(new Resume($object->resume));
+			$this->setRuntime($object->runtime);
+			$this->setStreamdetails(new Streams($object->streamdetails));
+		}
+	}
+
 	/**
 	 * @param string $director
 	 */
@@ -92,16 +105,10 @@ abstract class File extends Item
 		return $this->streamdetails;
 	}
 
-	public function __construct($object = null)
+	public static function getFields()
 	{
-		parent::__construct($object);
-
-		if ($object instanceof \stdClass)
-		{
-			$this->setDirector($object->director);
-			$this->setResume(new Resume($object->resume));
-			$this->setRuntime($object->runtime);
-			$this->setStreamdetails(new Streams($object->streamdetails));
-		}
+		return array_merge(parent::getFields(), array(
+			'director', 'streamdetails', 'runtime', 'resume'
+		));
 	}
 }
