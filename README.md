@@ -9,7 +9,7 @@ The interface allows to fetch only certain attributes, when - for example - a mo
 Installation is prefered by composer. This is what you need in your composer.json:
 
     "require" : {
-        "najidev/xbmc-rpc" : "*"
+        "najidev/xbmc-api" : "dev-master"
     }
 
 ## Basic Usage
