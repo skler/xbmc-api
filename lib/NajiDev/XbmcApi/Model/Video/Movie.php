@@ -519,10 +519,28 @@ class Movie extends File
 
 	public static function getFields()
 	{
-		return array_merge(parent::getFields(), array(
-			'rating', 'set', 'year', 'setid', 'votes', 'tagline', 'writer', 'plotoutline', 'sorttitle', 'imdbnumber',
-			'studio', 'showlink', 'genre', 'productioncode', 'country', 'premiered', 'originaltitle', 'cast', 'mpaa',
-			'top250', 'trailer',
-		));
-	}
+        return array_merge(parent::getFields(), [
+            'rating',
+            'set',
+            'year',
+            'setid',
+            'votes',
+            'tagline',
+            'writer',
+            'plotoutline',
+            'sorttitle',
+            'imdbnumber',
+            'studio',
+            'showlink',
+            'genre',
+//            'productioncode',
+            'country',
+//            'premiered',
+            'originaltitle',
+            'cast',
+            'mpaa',
+            'top250',
+            'trailer',
+        ]);
+    }
 }
