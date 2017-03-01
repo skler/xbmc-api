@@ -88,6 +88,15 @@ class Player extends AbstractService
 		return $players;
 	}
 
+    public function getPlayPause($playerId)
+    {
+        $service = $this;
+
+        $response = $this->callXbmc('PlayPause', ['playerid' => $playerId]);
+
+        return $response;
+    }
+
 	/**
 	 * @param $playerId
 	 * @return \NajiDev\XbmcApi\Model\Video\Episode|null
