@@ -152,9 +152,9 @@ class Movie extends File
 			$this->setStudio($object->studio);
 			$this->setShowlink($object->showlink);
 			$this->setGenre($object->genre);
-			$this->setProductioncode($object->productioncode);
+//			$this->setProductioncode($object->productioncode);
 			$this->setCountry($object->country);
-			$this->setPremiered($object->premiered);
+//			$this->setPremiered($object->premiered);
 			$this->setOriginaltitle($object->originaltitle);
 			$this->setCast($object->cast);
 			$this->setMpaa($object->mpaa);

@@ -162,11 +162,21 @@ class VideoLibrary extends AbstractService
 	 *
 	 * @return Movie[]
 	 */
-	public function getMovies()
+	public function getMovies($offset = 0, $limit = null, $sort = "none", $order = "ascending")
 	{
-		$response = $this->callXbmc('GetMovies', array(
-			'properties' => Movie::getFields()
-		));
+        $params = [
+            'properties' => Movie::getFields(),
+            'sort'       => [
+                'order'  => $order,
+                'method' => $sort,
+            ],
+            'limits'     => [
+                'start' => $offset,
+                'end'   => $offset + $limit,
+            ],
+        ];
+
+		$response = $this->callXbmc('GetMovies', $params);
 
 		$movies = array();
 		foreach ($response->movies as $movie)
@@ -198,11 +208,21 @@ class VideoLibrary extends AbstractService
 	 *
 	 * @return Movie[]
 	 */
-	public function getRecentlyAddedMovies()
+	public function getRecentlyAddedMovies($offset = 0, $limit = null, $sort = "none", $order = "ascending")
 	{
-		$response = $this->callXbmc('GetRecentlyAddedMovies', array(
-			'properties' => Movie::getFields()
-		));
+        $params = [
+            'properties' => Movie::getFields(),
+            'sort'       => [
+                'order'  => $order,
+                'method' => $sort,
+            ],
+            'limits'     => [
+                'start' => $offset,
+                'end'   => $offset + $limit,
+            ],
+        ];
+
+		$response = $this->callXbmc('GetRecentlyAddedMovies', $params);
 
 		$movies = array();
 		foreach($response->movies as $movie)
