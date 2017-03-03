@@ -161,10 +161,12 @@ class Movie extends File
 			$this->setTop250($object->top250);
 			$this->setTrailer($object->trailer);
 
-			$casts = array();
-			foreach ($object->cast as $cast)
-				$casts[] = new Cast($cast);
-			$this->setCast($casts);
+            if(!empty($object->cast)) {
+                $casts = array();
+                foreach ($object->cast as $cast)
+                    $casts[] = new Cast($cast);
+                $this->setCast($casts);
+            }
 		}
 	}
 

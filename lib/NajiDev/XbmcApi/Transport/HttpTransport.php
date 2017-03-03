@@ -49,7 +49,7 @@ class HttpTransport implements Transport
         error_log('http://' . $this->dsn);
         error_log($data);
         error_log($httpCode);
-        error_log($response);
+//        error_log($response);
 
 
         if (403 === $httpCode) {
