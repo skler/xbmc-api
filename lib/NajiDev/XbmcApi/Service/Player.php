@@ -119,7 +119,30 @@ class Player extends AbstractService
 		}
 	}
 
-	public function somethingIsPlaying()
+	public function open($id, $type)
+    {
+        switch ($type) {
+
+            case 'movie':
+
+                $item['movieid'] = $id;
+                break;
+
+            case 'episode':
+
+                $item['episodeid'] = $id;
+                break;
+
+            default:
+                throw new NotImplementedException('Type ' . $type . ' unknown');
+        }
+
+        return $this->callXbmc('Open', [
+            'item' => $item
+        ]);
+    }
+
+    public function somethingIsPlaying()
 	{
 		return 0 !== count($this->getActivePlayers());
 	}
