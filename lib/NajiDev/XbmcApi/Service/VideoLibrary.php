@@ -129,22 +129,56 @@ class VideoLibrary extends AbstractService
     /**
      * Retrieve all tv show episodes
      *
-     * @param int $tvshowid
-     * @param int $season
+     * @param null|int   $showId
+     * @param null|int   $season
+     * @param int        $offset
+     * @param null|int   $limit
+     * @param string     $sort
+     * @param string     $order
+     * @param null|array $properties
+     * @param array      $filters
      *
-     * @return \NajiDev\XbmcApi\Model\Video\Episode[]
+     * @return Episode[]
      */
-    public function getEpisodes($tvshowid = null, $season = null)
-    {
+    public function getEpisodes(
+        $showId = null,
+        $season = null,
+        $offset = 0,
+        $limit = null,
+        $sort = "none",
+        $order = "ascending",
+        $properties = null,
+        $filters = []
+    ) {
         $params = [
-            'properties' => Episode::getFields(),
+            'tvshowid'   => $showId ?? null,
+            'season'     => $season ?? null,
+            'properties' => $properties ? $properties : Movie::getFields(),
+            'sort'       => [
+                'order'  => $order,
+                'method' => $sort,
+            ],
+            'limits'     => [
+                'start' => $offset,
+                'end'   => $offset + $limit,
+            ],
         ];
 
-        if (is_int($tvshowid)) {
-            $params['tvshowid'] = $tvshowid;
-        }
-        if (is_int($season)) {
-            $params['season'] = $season;
+        if (count($filters)) {
+            foreach ($filters as $filterType => $values) {
+
+                if (!is_array($values)) {
+                    $values = [$values];
+                }
+
+                foreach ($values as $value) {
+                    $params['filter']['and'][] = [
+                        'operator' => 'contains',
+                        'field'    => $filterType,
+                        'value'    => $value,
+                    ];
+                }
+            }
         }
 
         $response = $this->callXbmc('GetEpisodes', $params);
@@ -315,8 +349,14 @@ class VideoLibrary extends AbstractService
         return $movieSets;
     }
 
+
     /**
-     * Retrieve all movies
+     * @param int    $offset
+     * @param null   $limit
+     * @param string $sort
+     * @param string $order
+     * @param null   $properties
+     * @param array  $filters
      *
      * @return Movie[]
      */
@@ -359,7 +399,7 @@ class VideoLibrary extends AbstractService
 
         $response = $this->callXbmc('GetMovies', $params);
 
-        if(!$response->movies){
+        if (!$response->movies) {
 
             return [];
         }
@@ -423,17 +463,58 @@ class VideoLibrary extends AbstractService
     /**
      * Retrieve all tv shows
      *
+     * @param int    $offset
+     * @param null   $limit
+     * @param string $sort
+     * @param string $order
+     * @param null   $properties
+     * @param array  $filters
+     *
      * @return TVShow[]
      */
-    public function getTVShows()
+    public function getTVShows(
+        $offset = 0,
+        $limit = null,
+        $sort = "none",
+        $order = "ascending",
+        $properties = null,
+        $filters = []
+    )
     {
-        $response = $this->callXbmc('GetTVShows', [
-            'properties' => TVShow::getFields(),
-        ]);
+        $params = [
+            'properties' => $properties ? $properties : Movie::getFields(),
+            'sort'       => [
+                'order'  => $order,
+                'method' => $sort,
+            ],
+            'limits'     => [
+                'start' => $offset,
+                'end'   => $offset + $limit,
+            ],
+        ];
+
+        if (count($filters)) {
+            foreach ($filters as $filterType => $values) {
+
+                if (!is_array($values)) {
+                    $values = [$values];
+                }
+
+                foreach ($values as $value) {
+                    $params['filter']['and'][] = [
+                        'operator' => 'contains',
+                        'field'    => $filterType,
+                        'value'    => $value,
+                    ];
+                }
+            }
+        }
+
+        $response = $this->callXbmc('GetTVShows', $params);
 
         $shows = [];
         foreach ($response->tvshows as $show) {
-            $shows = $this->buildTvShow($show);
+            $shows[] = $this->buildTvShow($show);
         }
 
         return $shows;
